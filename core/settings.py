@@ -6,8 +6,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-dev-key-change-in-production-xyz123')
 DEBUG = config('DEBUG', default=True, cast=bool)
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*').split(',')
-
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'edumanage-p1l1.onrender.com').split(',')
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
