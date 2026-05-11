@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}EduManage{% endblock %} | School Management System</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+<style>
+  :root {
+    --primary: #2563eb;
+    --sidebar-w: 250px;
+  }
+
+  body {
+    background: #f1f5f9;
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  .sidebar {
+    width: var(--sidebar-w);
+    min-height: 100vh;
+    background: linear-gradient(180deg, #1e3a8a 0%, #1d4ed8 100%);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    box-shadow: 4px 0 15px rgba(0,0,0,.15);
+  }
+
+  .sidebar-brand {
+    padding: 1.5rem 1rem;
+    border-bottom: 1px solid rgba(255,255,255,.1);
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: .5px;
+  }
+
+  .sidebar-brand span {
+    color: #93c5fd;
+  }
+
+  .sidebar .nav-link {
+    color: rgba(255,255,255,.75);
+    padding: .65rem 1.25rem;
+    border-radius: .375rem;
+    margin: .1rem .75rem;
+    transition: all .2s;
+    font-size: .9rem;
+  }
+
+  .sidebar .nav-link:hover,
+  .sidebar .nav-link.active {
+    background: rgba(255,255,255,.15);
+    color: #fff;
+  }
+
+  .sidebar .nav-link i {
+    width: 20px;
+    margin-right: .5rem;
+  }
+
+  .sidebar .section-label {
+    font-size: .7rem;
+    color: rgba(255,255,255,.4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: .75rem 1.25rem .25rem;
+    margin: .5rem .75rem 0;
+  }
+
+  .main-content {
+    margin-left: var(--sidebar-w);
+    padding: 0;
+  }
+
+  .topbar {
+    background: #fff;
+    border-bottom: 1px solid #e2e8f0;
+    padding: .875rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 90;
+  }
+
+  .page-content {
+    padding: 2rem;
+  }
+
+  .card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.08);
+  }
+
+  .card-header {
+    background: #fff;
+    border-bottom: 1px solid #f1f5f9;
+    font-weight: 600;
+  }
+
+  .stat-card {
+    border-radius: 12px;
+    padding: 1.5rem;
+    color: #fff;
+  }
+
+  .stat-card .stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .stat-card .stat-label {
+    opacity: .85;
+    font-size: .9rem;
+    margin-top: .25rem;
+  }
+
+  .stat-card .stat-icon {
+    font-size: 2rem;
+    opacity: .3;
+  }
+
+  .badge-role-super_admin {
+    background: #7c3aed;
+  }
+
+  .badge-role-school_admin {
+    background: #059669;
+  }
+
+  .badge-role-teacher {
+    background: #d97706;
+  }
+
+  .badge-role-student {
+    background: #2563eb;
+  }
+
+  .table th {
+    font-size: .8rem;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    color: #64748b;
+  }
+
+  .btn-primary {
+    background: var(--primary);
+    border-color: var(--primary);
+  }
+
+  .user-avatar {
+    width: 36px;
+    height: 36px;
+    background: var(--primary);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: 600;
+    font-size: .85rem;
+  }
+
+  .sidebar-user {
+    padding: 1rem;
+    border-top: 1px solid rgba(255,255,255,.1);
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: rgba(0,0,0,.15);
+  }
+
+  .role-badge {
+    font-size: .7rem;
+    padding: .2rem .5rem;
+    border-radius: 50px;
+    background: rgba(255,255,255,.2);
+    color: #fff;
+  }
+
+  .material-card {
+    transition: transform .2s;
+  }
+
+  .material-card:hover {
+    transform: translateY(-2px);
+  }
+
+  .breadcrumb {
+    font-size: .85rem;
+  }
+
+  .form-label {
+    font-weight: 500;
+    font-size: .9rem;
+  }
+
+  .alert {
+    border-radius: 10px;
+    border: none;
+  }
+</style>
+
+{% block extra_css %}{% endblock %}
+</head>
+
+<body>
+
+{% if user.is_authenticated %}
+
+<!-- Sidebar -->
+<nav class="sidebar">
+  <div class="sidebar-brand">
+    <i class="fas fa-graduation-cap me-2"></i>
+    Edu<span>Manage</span>
+  </div>
+
+  <div style="padding: .75rem 0; overflow-y: auto; height: calc(100vh - 130px);">
+    {% block sidebar_nav %}{% endblock %}
+{% if user.is_super_admin %}
+<div class="section-label">System</div>
+<a href="/admin/" target="_blank" class="nav-link" style="background:rgba(220,38,38,.2); color:#fca5a5;">
+  <i class="fas fa-cog"></i> Admin
+</a>
+{% endif %}
+  </div>
+
+  <div class="sidebar-user">
+    <div class="d-flex align-items-center gap-2">
+      <div class="user-avatar">
+        {{ user.username|first|upper }}
+      </div>
+
+      <div style="flex:1; min-width:0;">
+        <div class="text-white fw-semibold text-truncate" style="font-size:.85rem;">
+          {{ user.get_full_name|default:user.username }}
+        </div>
+
+        <div class="role-badge">
+          {{ user.get_role_display }}
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<div class="main-content">
+
+  <div class="topbar">
+    <div>
+      <h5 class="mb-0 fw-semibold">
+        {% block page_title %}Dashboard{% endblock %}
+      </h5>
+
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0">
+          {% block breadcrumb %}
+          <li class="breadcrumb-item active">Home</li>
+          {% endblock %}
+        </ol>
+      </nav>
+    </div>
+
+    <div class="d-flex align-items-center gap-3">
+      {% if user.school %}
+      <span class="badge bg-light text-dark border">
+        <i class="fas fa-school me-1"></i>
+        {{ user.school.school_code }}
+      </span>
+      {% endif %}
+
+      <a href="{% url 'logout' %}" class="btn btn-sm btn-outline-danger">
+        <i class="fas fa-sign-out-alt me-1"></i>
+        Logout
+      </a>
+    </div>
+  </div>
+
+  <div class="page-content">
+
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endfor %}
+
+    {% block content %}{% endblock %}
+
+  </div>
+</div>
+
+{% else %}
+
+<div class="container mt-5">
+  {% block guest_content %}{% endblock %}
+</div>
+
+{% endif %}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+{% block extra_js %}{% endblock %}
+
+</body>
+</html>

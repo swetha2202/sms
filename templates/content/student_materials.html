@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% block title %}Study Materials{% endblock %}
+{% block page_title %}Study Materials{% endblock %}
+{% block sidebar_nav %}
+<a href="{% url 'dashboard' %}" class="nav-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+<a href="{% url 'student_materials' %}" class="nav-link active"><i class="fas fa-book-open"></i> Study Materials</a>
+{% for cls in my_classes %}<a href="#" class="nav-link"><i class="fas fa-chalkboard"></i> {{ cls.name }}</a>{% endfor %}
+{% endblock %}
+{% block content %}
+<div class="card mb-4">
+  <div class="card-body">
+    <form method="get" class="row g-2 align-items-end">
+      <div class="col-md-4">
+        <label class="form-label mb-1" style="font-size:.85rem;">Filter by Type</label>
+        <select name="type" class="form-select form-select-sm">
+          <option value="">All Types</option>
+          <option value="pdf" {% if type_filter == 'pdf' %}selected{% endif %}>PDF Notes</option>
+          <option value="video" {% if type_filter == 'video' %}selected{% endif %}>Video Lectures</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label mb-1" style="font-size:.85rem;">Filter by Subject</label>
+        <select name="subject" class="form-select form-select-sm">
+          <option value="">All Subjects</option>
+          {% for s in subjects %}<option value="{{ s.pk }}" {% if subject_filter == s.pk|stringformat:"s" %}selected{% endif %}>{{ s.name }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2">
+        <button type="submit" class="btn btn-primary btn-sm w-100"><i class="fas fa-filter me-1"></i>Filter</button>
+      </div>
+      <div class="col-md-2">
+        <a href="{% url 'student_materials' %}" class="btn btn-outline-secondary btn-sm w-100">Reset</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-xl-8">
+    <div class="row g-3">
+      {% for m in materials %}
+      <div class="col-md-6">
+        <div class="card material-card h-100">
+          <div class="card-body">
+            <div class="d-flex gap-3 align-items-start">
+              <div style="width:48px;height:48px;background:{% if m.material_type == 'pdf' %}#fee2e2{% else %}#dbeafe{% endif %};border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <i class="fas fa-{% if m.material_type == 'pdf' %}file-pdf text-danger{% else %}video text-primary{% endif %}" style="font-size:1.4rem;"></i>
+              </div>
+              <div style="flex:1;min-width:0;">
+                <div class="fw-semibold">{{ m.title }}</div>
+                <div class="text-muted" style="font-size:.8rem;">{{ m.subject.name }} &bull; {{ m.class_assigned.name }}</div>
+                {% if m.description %}<div class="text-muted mt-1" style="font-size:.8rem;">{{ m.description|truncatechars:60 }}</div>{% endif %}
+                <div class="mt-2">
+                  <a href="{{ m.file.url }}" class="btn btn-sm {% if m.material_type == 'pdf' %}btn-danger{% else %}btn-primary{% endif %}" target="_blank">
+                    <i class="fas fa-{% if m.material_type == 'pdf' %}file-pdf{% else %}play{% endif %} me-1"></i>
+                    {% if m.material_type == 'pdf' %}Open PDF{% else %}Watch{% endif %}
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-12"><div class="card"><div class="card-body text-center text-muted py-5">No study materials available.</div></div></div>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="col-xl-4">
+    <div class="card">
+      <div class="card-header py-3"><i class="fas fa-bullhorn me-2 text-primary"></i>Announcements</div>
+      <div class="list-group list-group-flush">
+        {% for ann in announcements %}
+        <div class="list-group-item">
+          <div class="fw-semibold" style="font-size:.9rem;">{{ ann.title }}</div>
+          <div class="text-muted" style="font-size:.8rem;margin-top:.2rem;">{{ ann.body|truncatechars:100 }}</div>
+          {% if ann.video %}<a href="{{ ann.video.url }}" class="btn btn-sm btn-outline-primary mt-1 py-0 px-2" style="font-size:.75rem;" target="_blank"><i class="fas fa-video me-1"></i>Watch</a>{% endif %}
+          <div class="text-muted mt-1" style="font-size:.75rem;">{{ ann.created_at|date:"M d, Y" }}</div>
+        </div>
+        {% empty %}
+        <div class="list-group-item text-center text-muted py-3">No announcements.</div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

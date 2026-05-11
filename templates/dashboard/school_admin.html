@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% block title %}School Admin Dashboard{% endblock %}
+{% block page_title %}School Admin Dashboard{% endblock %}
+
+{% block sidebar_nav %}
+<div class="section-label">Overview</div>
+<a href="{% url 'dashboard' %}" class="nav-link active"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+<div class="section-label">Management</div>
+<a href="{% url 'user_list' %}" class="nav-link"><i class="fas fa-users"></i> Users</a>
+<a href="{% url 'class_list' %}" class="nav-link"><i class="fas fa-chalkboard"></i> Classes</a>
+<a href="{% url 'subject_list' %}" class="nav-link"><i class="fas fa-book"></i> Subjects</a>
+<div class="section-label">Content</div>
+<a href="{% url 'announcement_list' %}" class="nav-link"><i class="fas fa-bullhorn"></i> Announcements</a>
+<a href="{% url 'announcement_create' %}" class="nav-link"><i class="fas fa-plus"></i> New Announcement</a>
+{% endblock %}
+
+{% block content %}
+<div class="row g-4 mb-4">
+  <div class="col-sm-6 col-xl-3">
+    <div class="stat-card" style="background:linear-gradient(135deg,#1e3a8a,#2563eb)">
+      <div class="d-flex justify-content-between align-items-start">
+        <div><div class="stat-number">{{ teachers.count }}</div><div class="stat-label">Teachers</div></div>
+        <div class="stat-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-3">
+    <div class="stat-card" style="background:linear-gradient(135deg,#059669,#10b981)">
+      <div class="d-flex justify-content-between align-items-start">
+        <div><div class="stat-number">{{ students.count }}</div><div class="stat-label">Students</div></div>
+        <div class="stat-icon"><i class="fas fa-user-graduate"></i></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-3">
+    <div class="stat-card" style="background:linear-gradient(135deg,#7c3aed,#8b5cf6)">
+      <div class="d-flex justify-content-between align-items-start">
+        <div><div class="stat-number">{{ classes.count }}</div><div class="stat-label">Classes</div></div>
+        <div class="stat-icon"><i class="fas fa-chalkboard"></i></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-3">
+    <div class="stat-card" style="background:linear-gradient(135deg,#d97706,#f59e0b)">
+      <div class="d-flex justify-content-between align-items-start">
+        <div><div class="stat-number">{{ subjects.count }}</div><div class="stat-label">Subjects</div></div>
+        <div class="stat-icon"><i class="fas fa-book"></i></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-xl-8">
+    <div class="card h-100">
+      <div class="card-header d-flex justify-content-between align-items-center py-3">
+        <span><i class="fas fa-users me-2 text-primary"></i>Recent Users</span>
+        <a href="{% url 'user_create' %}" class="btn btn-primary btn-sm"><i class="fas fa-plus me-1"></i>Add User</a>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead class="table-light"><tr><th>Name</th><th>Username</th><th>Role</th></tr></thead>
+            <tbody>
+              {% for t in teachers %}
+              <tr>
+                <td>{{ t.get_full_name|default:t.username }}</td>
+                <td>{{ t.username }}</td>
+                <td><span class="badge" style="background:#d97706;">Teacher</span></td>
+              </tr>
+              {% endfor %}
+              {% for s in students %}
+              <tr>
+                <td>{{ s.get_full_name|default:s.username }}</td>
+                <td>{{ s.username }}</td>
+                <td><span class="badge" style="background:#2563eb;">Student</span></td>
+              </tr>
+              {% endfor %}
+              {% if not teachers and not students %}
+              <tr><td colspan="3" class="text-center text-muted py-3">No users yet.</td></tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-4">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center py-3">
+        <span><i class="fas fa-bullhorn me-2 text-primary"></i>Announcements</span>
+        <a href="{% url 'announcement_create' %}" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i></a>
+      </div>
+      <div class="list-group list-group-flush">
+        {% for ann in announcements %}
+        <div class="list-group-item">
+          <div class="fw-semibold" style="font-size:.9rem;">{{ ann.title }}</div>
+          <div class="text-muted" style="font-size:.8rem;">{{ ann.created_at|date:"M d, Y" }}</div>
+        </div>
+        {% empty %}
+        <div class="list-group-item text-muted text-center py-3" style="font-size:.9rem;">No announcements yet.</div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

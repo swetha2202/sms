@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}Subjects{% endblock %}
+{% block page_title %}Subjects{% endblock %}
+{% block sidebar_nav %}
+<a href="{% url 'dashboard' %}" class="nav-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+<a href="{% url 'user_list' %}" class="nav-link"><i class="fas fa-users"></i> Users</a>
+<a href="{% url 'class_list' %}" class="nav-link"><i class="fas fa-chalkboard"></i> Classes</a>
+<a href="{% url 'subject_list' %}" class="nav-link active"><i class="fas fa-book"></i> Subjects</a>
+<a href="{% url 'announcement_list' %}" class="nav-link"><i class="fas fa-bullhorn"></i> Announcements</a>
+{% endblock %}
+{% block content %}
+<div class="row">
+  <div class="col-lg-5 mb-4">
+    <div class="card">
+      <div class="card-header py-3"><i class="fas fa-plus me-2 text-primary"></i>Add Subject</div>
+      <div class="card-body">
+        <form method="post" action="{% url 'subject_create' %}">{% csrf_token %}
+          <div class="mb-3"><label class="form-label">Subject Name *</label>
+            <input type="text" name="name" class="form-control" placeholder="e.g. Mathematics" required></div>
+          <button type="submit" class="btn btn-primary"><i class="fas fa-plus me-1"></i>Add Subject</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-7">
+    <div class="card">
+      <div class="card-header py-3"><i class="fas fa-book me-2 text-primary"></i>Subjects</div>
+      <div class="list-group list-group-flush">
+        {% for s in subjects %}
+        <div class="list-group-item d-flex justify-content-between align-items-center">
+          <span class="fw-semibold">{{ s.name }}</span>
+          <form method="post" action="{% url 'subject_delete' s.pk %}" onsubmit="return confirm('Delete?');">
+            {% csrf_token %}<button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+          </form>
+        </div>
+        {% empty %}
+        <div class="list-group-item text-center text-muted py-4">No subjects yet.</div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

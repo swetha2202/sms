@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}New Announcement{% endblock %}
+{% block page_title %}New Announcement{% endblock %}
+{% block sidebar_nav %}
+<a href="{% url 'dashboard' %}" class="nav-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+<a href="{% url 'announcement_list' %}" class="nav-link"><i class="fas fa-bullhorn"></i> Announcements</a>
+<a href="{% url 'announcement_create' %}" class="nav-link active"><i class="fas fa-plus"></i> New Announcement</a>
+{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <div class="card">
+      <div class="card-header py-3"><i class="fas fa-bullhorn me-2 text-primary"></i>Post Announcement</div>
+      <div class="card-body">
+        <form method="post" enctype="multipart/form-data">{% csrf_token %}
+          <div class="mb-3"><label class="form-label">Title *</label><input type="text" name="title" class="form-control" required></div>
+          <div class="mb-3"><label class="form-label">Content *</label><textarea name="body" class="form-control" rows="5" required></textarea></div>
+          <div class="mb-4"><label class="form-label">Video (optional)</label>
+            <input type="file" name="video" class="form-control" accept="video/*">
+            <div class="form-text">Attach a video to this announcement.</div></div>
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane me-1"></i>Post</button>
+            <a href="{% url 'announcement_list' %}" class="btn btn-outline-secondary">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

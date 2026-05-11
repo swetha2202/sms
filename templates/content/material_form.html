@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}Upload Material{% endblock %}
+{% block page_title %}Upload Study Material{% endblock %}
+{% block sidebar_nav %}
+<a href="{% url 'dashboard' %}" class="nav-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+<a href="{% url 'material_upload' %}" class="nav-link active"><i class="fas fa-upload"></i> Upload Material</a>
+<a href="{% url 'material_list' %}" class="nav-link"><i class="fas fa-folder"></i> My Materials</a>
+{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <div class="card">
+      <div class="card-header py-3"><i class="fas fa-upload me-2 text-primary"></i>Upload Study Material</div>
+      <div class="card-body">
+        <form method="post" enctype="multipart/form-data">{% csrf_token %}
+          <div class="mb-3"><label class="form-label">Title *</label><input type="text" name="title" class="form-control" required></div>
+          <div class="mb-3"><label class="form-label">Type *</label>
+            <select name="material_type" class="form-select" required>
+              <option value="">Select type</option>
+              <option value="pdf">PDF Notes</option>
+              <option value="video">Video Lecture</option>
+            </select></div>
+          <div class="mb-3"><label class="form-label">Subject *</label>
+            <select name="subject" class="form-select" required>
+              <option value="">Select subject</option>
+              {% for s in subjects %}<option value="{{ s.pk }}">{{ s.name }}</option>{% endfor %}
+            </select></div>
+          <div class="mb-3"><label class="form-label">Class *</label>
+            <select name="class_assigned" class="form-select" required>
+              <option value="">Select class</option>
+              {% for c in classes %}<option value="{{ c.pk }}">{{ c.name }}</option>{% endfor %}
+            </select></div>
+          <div class="mb-3"><label class="form-label">File *</label>
+            <input type="file" name="file" class="form-control" required>
+            <div class="form-text">Accepted: PDF files, Video files (MP4, etc.)</div></div>
+          <div class="mb-4"><label class="form-label">Description</label>
+            <textarea name="description" class="form-control" rows="2" placeholder="Optional description..."></textarea></div>
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary"><i class="fas fa-upload me-1"></i>Upload</button>
+            <a href="{% url 'material_list' %}" class="btn btn-outline-secondary">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

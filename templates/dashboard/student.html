@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block title %}Student Dashboard{% endblock %}
+{% block page_title %}Student Dashboard{% endblock %}
+
+{% block sidebar_nav %}
+<div class="section-label">Overview</div>
+<a href="{% url 'dashboard' %}" class="nav-link active"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+<div class="section-label">My Learning</div>
+<a href="{% url 'student_materials' %}" class="nav-link"><i class="fas fa-book-open"></i> Study Materials</a>
+<div class="section-label">My Classes</div>
+{% for cls in my_classes %}
+<a href="#" class="nav-link"><i class="fas fa-chalkboard"></i> {{ cls.name }}</a>
+{% endfor %}
+{% endblock %}
+
+{% block content %}
+<div class="row g-4 mb-4">
+  <div class="col-sm-6 col-xl-4">
+    <div class="stat-card" style="background:linear-gradient(135deg,#1e3a8a,#2563eb)">
+      <div class="d-flex justify-content-between align-items-start">
+        <div><div class="stat-number">{{ my_classes.count }}</div><div class="stat-label">Enrolled Classes</div></div>
+        <div class="stat-icon"><i class="fas fa-chalkboard"></i></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-4">
+    <div class="stat-card" style="background:linear-gradient(135deg,#059669,#10b981)">
+      <div class="d-flex justify-content-between align-items-start">
+        <div><div class="stat-number">{{ materials|length }}</div><div class="stat-label">Study Materials</div></div>
+        <div class="stat-icon"><i class="fas fa-file-alt"></i></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-xl-4">
+    <div class="stat-card" style="background:linear-gradient(135deg,#d97706,#f59e0b)">
+      <div class="d-flex justify-content-between align-items-start">
+        <div><div class="stat-number">{{ announcements|length }}</div><div class="stat-label">Announcements</div></div>
+        <div class="stat-icon"><i class="fas fa-bullhorn"></i></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-xl-8">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center py-3">
+        <span><i class="fas fa-book-open me-2 text-primary"></i>Recent Study Materials</span>
+        <a href="{% url 'student_materials' %}" class="btn btn-sm btn-outline-primary">View All</a>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          {% for m in materials|slice:":6" %}
+          <div class="col-md-6">
+            <div class="card material-card border" style="border-radius:10px;">
+              <div class="card-body p-3">
+                <div class="d-flex gap-2 align-items-start">
+                  <div style="width:40px;height:40px;background:{% if m.material_type == 'pdf' %}#fee2e2{% else %}#dbeafe{% endif %};border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <i class="fas fa-{% if m.material_type == 'pdf' %}file-pdf text-danger{% else %}video text-primary{% endif %}"></i>
+                  </div>
+                  <div style="min-width:0;">
+                    <div class="fw-semibold text-truncate" style="font-size:.9rem;">{{ m.title }}</div>
+                    <div class="text-muted" style="font-size:.78rem;">{{ m.subject.name }} &bull; {{ m.class_assigned.name }}</div>
+                    <a href="{{ m.file.url }}" class="btn btn-sm btn-outline-primary mt-1 py-0 px-2" target="_blank" style="font-size:.75rem;">
+                      <i class="fas fa-{% if m.material_type == 'pdf' %}eye{% else %}play{% endif %} me-1"></i>
+                      {% if m.material_type == 'pdf' %}View{% else %}Watch{% endif %}
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% empty %}
+          <div class="col-12 text-center text-muted py-4">No materials available yet.</div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-4">
+    <div class="card">
+      <div class="card-header py-3"><i class="fas fa-bullhorn me-2 text-primary"></i>Announcements</div>
+      <div class="list-group list-group-flush">
+        {% for ann in announcements %}
+        <div class="list-group-item">
+          <div class="fw-semibold" style="font-size:.9rem;">{{ ann.title }}</div>
+          <div class="text-muted" style="font-size:.8rem;margin-top:.2rem;">{{ ann.body|truncatechars:80 }}</div>
+          <div class="text-muted" style="font-size:.75rem;margin-top:.3rem;">{{ ann.created_at|date:"M d, Y" }}</div>
+        </div>
+        {% empty %}
+        <div class="list-group-item text-center text-muted py-3">No announcements.</div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

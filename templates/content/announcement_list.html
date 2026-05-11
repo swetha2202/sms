@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block title %}Announcements{% endblock %}
+{% block page_title %}Announcements{% endblock %}
+{% block sidebar_nav %}
+<a href="{% url 'dashboard' %}" class="nav-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+<a href="{% url 'user_list' %}" class="nav-link"><i class="fas fa-users"></i> Users</a>
+<a href="{% url 'class_list' %}" class="nav-link"><i class="fas fa-chalkboard"></i> Classes</a>
+<a href="{% url 'subject_list' %}" class="nav-link"><i class="fas fa-book"></i> Subjects</a>
+<a href="{% url 'announcement_list' %}" class="nav-link active"><i class="fas fa-bullhorn"></i> Announcements</a>
+<a href="{% url 'announcement_create' %}" class="nav-link"><i class="fas fa-plus"></i> New Announcement</a>
+{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+  <div></div>
+  <a href="{% url 'announcement_create' %}" class="btn btn-primary"><i class="fas fa-plus me-1"></i>New Announcement</a>
+</div>
+{% for ann in announcements %}
+<div class="card mb-3">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-start">
+      <h5 class="card-title mb-1">{{ ann.title }}</h5>
+      <form method="post" action="{% url 'announcement_delete' ann.pk %}" onsubmit="return confirm('Delete?');">
+        {% csrf_token %}<button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+      </form>
+    </div>
+    <p class="text-muted mb-2" style="font-size:.85rem;"><i class="fas fa-clock me-1"></i>{{ ann.created_at|date:"M d, Y" }}</p>
+    <p class="card-text">{{ ann.body }}</p>
+    {% if ann.video %}<a href="{{ ann.video.url }}" class="btn btn-sm btn-outline-primary" target="_blank"><i class="fas fa-video me-1"></i>Watch Video</a>{% endif %}
+  </div>
+</div>
+{% empty %}
+<div class="card"><div class="card-body text-center text-muted py-5">No announcements yet. <a href="{% url 'announcement_create' %}">Create one.</a></div></div>
+{% endfor %}
+{% endblock %}
