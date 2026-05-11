@@ -118,3 +118,6 @@ school_mgmt/
 - Passwords hashed with Django's default PBKDF2
 - CSRF enabled on all forms
 - Switch SQLite → PostgreSQL before going live, seriously
+
+## Live Demo
+https://edumanage-p11l.onrender.com
